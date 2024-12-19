@@ -1,12 +1,6 @@
-import React, { Component } from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 
-export default class App extends Component {
-    render() {
-        return (
-            <div>
-                ClearScore FED test...
-            </div>
-        );
-    }
+export default function App() {
+  return <>HI</>;
 }
