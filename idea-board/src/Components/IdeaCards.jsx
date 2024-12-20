@@ -5,7 +5,7 @@ import { DUMMY_DATA, getFormattedDate } from "../Helpers/helpers.js";
 export default function IdeaCards() {
   // STATES -----------------------------------------------
   const [ideasArray, setIdeasArray] = useState(DUMMY_DATA);
-  const [currentIndex, setCurrentIndex] = useState(null);
+  const [indexBeingEdited, setIndexBeingEdited] = useState(null);
   const [editedInfo, setEditedInfo] = useState({
     title: "",
     details: "",
@@ -19,7 +19,7 @@ export default function IdeaCards() {
   // CHARACTER LIMITS -------------------------------------
   //  consts ----------------------------
   const CHAR_LIMITS = {
-    TITLE: { MAX: 50, WARNING: 40 },
+    TITLE: { MAX: 50, WARNING: 43 },
     DETAILS: { MAX: 1000, WARNING: 950 },
   };
   const CHAR_LIMIT_CLASSES = {
@@ -96,7 +96,7 @@ export default function IdeaCards() {
   }
 
   function editCard(index) {
-    setCurrentIndex(index);
+    setIndexBeingEdited(index);
     if (index === null) {
       setEditedInfo({
         title: "",
@@ -134,79 +134,68 @@ export default function IdeaCards() {
     editCard(null);
   }
 
+  // Reusable subcomponents for buttons and textareas --------------------------------------------
+  const RenderButtons = (index, isEditing) => (
+    <section className="cards-btns-container">
+      <button
+        className={`btn ${
+          isEditing
+            ? allLengthsValid
+              ? "editing-confirmation-btn"
+              : ""
+            : "editing-btn"
+        }`}
+        onClick={() =>
+          isEditing
+            ? updateValuesByIndex(index, {
+                title: editedInfo.title,
+                details: editedInfo.details,
+              })
+            : editCard(index)
+        }
+      >
+        {isEditing ? <ConfirmEditIcon /> : <EditIcon />}
+      </button>
+      <button className="btn deleting-btn" onClick={() => deleteByIndex(index)}>
+        <DeleteIcon />
+      </button>
+    </section>
+  );
+
+  const RenderTextAreaAndCharCount = (field, maxLength) => (
+    <>
+      <textarea
+        className={`textarea-${field}`}
+        value={editedInfo[field] || storedIdea[field]}
+        onChange={(e) => handleChange(e, field)}
+      />
+      <p className={editedInfoLengthClasses[field]}>
+        {editedInfo[field] ? editedInfo[field].length : 0} / {maxLength}
+      </p>
+    </>
+  );
+
   return (
     <>
-      {ideasArray.map((storedIdea, index) => (
+      {ideasArray.map((storedIdea, currentCardIndex) => (
         <div className="card" key={storedIdea.id}>
           <section className="card-dates">
             <div>Created: {storedIdea.createdAt}</div>
             <div>Updated: {storedIdea.lastUpdated}</div>
           </section>
 
-          {currentIndex === index ? (
+          {indexBeingEdited === currentCardIndex ? (
             <>
-              <textarea
-                className="textarea-title"
-                value={editedInfo.title || storedIdea.title}
-                onChange={(e) => handleChange(e, "title")}
-              />
-              <p className={editedInfoLengthClasses.title}>
-                {editedInfo.title ? editedInfo.title.length : 0} /{" "}
-                {CHAR_LIMITS.TITLE.MAX}
-              </p>
-              <div>
-                <textarea
-                  className="textarea-details"
-                  value={editedInfo.details || storedIdea.details}
-                  onChange={(e) => handleChange(e, "details")}
-                />
-                <p className={editedInfoLengthClasses.details}>
-                  {editedInfo.details ? editedInfo.details.length : 0} /{" "}
-                  {CHAR_LIMITS.DETAILS.MAX}
-                </p>
-              </div>
-
-              <section className="cards-btns-container">
-                <button
-                  className={`btn ${
-                    allLengthsValid ? "editing-confirmation-btn" : ""
-                  }`}
-                  onClick={() =>
-                    updateValuesByIndex(index, {
-                      title: editedInfo.title,
-                      details: editedInfo.details,
-                    })
-                  }
-                >
-                  <ConfirmEditIcon />
-                </button>
-                <button
-                  className="btn deleting-btn"
-                  onClick={() => deleteByIndex(index)}
-                >
-                  <DeleteIcon />
-                </button>
-              </section>
+              {RenderTextAreaAndCharCount("title", CHAR_LIMITS.TITLE.MAX)}
+              {RenderTextAreaAndCharCount("details", CHAR_LIMITS.DETAILS.MAX)}
+              {RenderButtons(currentCardIndex, true)}
             </>
           ) : (
             <>
               <div className="card-title">{storedIdea.title}</div>
               <div className="card-details">{storedIdea.details}</div>
 
-              <section className="cards-btns-container">
-                <button
-                  className="btn editing-btn"
-                  onClick={() => editCard(index)}
-                >
-                  <EditIcon />
-                </button>
-                <button
-                  className="btn deleting-btn"
-                  onClick={() => deleteByIndex(index)}
-                >
-                  <DeleteIcon />
-                </button>
-              </section>
+              {RenderButtons(currentCardIndex, false)}
             </>
           )}
         </div>
@@ -224,15 +213,14 @@ export default function IdeaCards() {
 }
 
 // ICONS BELOW ---------------------------------------------------
-function EditIcon() {
-  return <img src="edit.svg" alt="edit pencil icon" height="10" width="15" />;
-}
+const EditIcon = () => (
+  <img src="edit.svg" alt="edit pencil icon" height="10" width="15" />
+);
 
-function ConfirmEditIcon() {
-  return <img src="confirm_edit.svg" alt="tick icon" height="10" width="15" />;
-}
-function DeleteIcon() {
-  return (
-    <img src="delete.svg" alt="delete trash can icon" height="10" width="15" />
-  );
-}
+const ConfirmEditIcon = () => (
+  <img src="confirm_edit.svg" alt="tick icon" height="10" width="15" />
+);
+
+const DeleteIcon = () => (
+  <img src="delete.svg" alt="delete trash can icon" height="10" width="15" />
+);
