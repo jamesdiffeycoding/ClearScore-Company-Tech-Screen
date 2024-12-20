@@ -1,48 +1,65 @@
 import "./IdeaCards.css";
 import { useState, useEffect } from "react";
-import { dummyData, getFormattedDate } from "../Helpers/helpers.js";
+import { DUMMY_DATA, getFormattedDate } from "../Helpers/helpers.js";
 
 export default function IdeaCards() {
   // STATES -----------------------------------------------
-  const [ideas, setIdeas] = useState(dummyData);
-  const [title, setTitle] = useState("");
-  const [details, setDetails] = useState("");
+  const [ideasArray, setIdeasArray] = useState(DUMMY_DATA);
   const [editingIndex, setEditingIndex] = useState(null);
-  const [titleLengthValidity, setTitleLengthValidity] = useState("");
-  const [detailsLengthValidity, setDetailsLengthValidity] = useState("");
-  const [dataAppropriateLength, setDataAppropriateLength] = useState(false);
+  // editing the title field
+  const [title, setTitle] = useState("");
+  const [titleLengthClass, setTitleLengthClass] = useState("");
+  // editing the details field
+  const [details, setDetails] = useState("");
+  const [detailsLengthClass, setDetailsLengthClass] = useState("");
+  // ensure all lengths are within limits
+  const [allLengthsValid, setAllLengthsValid] = useState(false);
+
+  //  CONSTS FOR CHAR LIMITS --------------------------------
+  const CHAR_LIMIT_VALUES = {
+    TITLE: { MAX: 50, WARNING: 40 },
+    DETAILS: { MAX: 1000, WARNING: 950 },
+  };
+  const CHAR_LIMIT_CLASSES = {
+    SURPASSED: "character-limit-surpassed",
+    CLOSE: "character-limit-close",
+    OK: "character-limit-ok",
+  };
 
   // USE EFFECTS FOR CHARACTER LIMITS -----------------------
+  // update titleLengthClass
   useEffect(() => {
-    if (title.length > 50) {
-      setTitleLengthValidity("character-limit-surpassed");
-    } else if (title.length >= 40) {
-      setTitleLengthValidity("character-limit-close");
+    if (title.length > CHAR_LIMIT_VALUES.TITLE.MAX) {
+      setTitleLengthClass(CHAR_LIMIT_CLASSES.SURPASSED);
+    } else if (title.length >= CHAR_LIMIT_VALUES.TITLE.WARNING) {
+      setTitleLengthClass(CHAR_LIMIT_CLASSES.CLOSE);
     } else {
-      setTitleLengthValidity("character-limit-ok");
+      setTitleLengthClass(CHAR_LIMIT_CLASSES.OK);
     }
   }, [title]);
 
+  // update detailsLengthClass
   useEffect(() => {
-    if (details.length > 1000) {
-      setDetailsLengthValidity("character-limit-surpassed");
-    } else if (details.length >= 900) {
-      setDetailsLengthValidity("character-limit-close");
+    if (details.length > CHAR_LIMIT_VALUES.DETAILS.MAX) {
+      setDetailsLengthClass(CHAR_LIMIT_CLASSES.SURPASSED);
+    } else if (details.length >= CHAR_LIMIT_VALUES.DETAILS.WARNING) {
+      setDetailsLengthClass(CHAR_LIMIT_CLASSES.CLOSE);
     } else {
-      setDetailsLengthValidity("character-limit-ok");
+      setDetailsLengthClass(CHAR_LIMIT_CLASSES.OK);
     }
   }, [details]);
 
+  // update allLengthsValid
   useEffect(() => {
     if (
-      titleLengthValidity !== "character-limit-surpassed" &&
-      detailsLengthValidity !== "character-limit-surpassed"
+      titleLengthClass !== CHAR_LIMIT_CLASSES.SURPASSED &&
+      detailsLengthClass !== CHAR_LIMIT_CLASSES.SURPASSED
     ) {
-      setDataAppropriateLength(true);
+      setAllLengthsValid(true);
     } else {
-      setDataAppropriateLength(false);
+      setAllLengthsValid(false);
     }
-  }, [titleLengthValidity, detailsLengthValidity]);
+  }, [titleLengthClass, detailsLengthClass]);
 
   // CRUD SUPPORT FUNCTIONS ----------------------------------------
   function handleTitleChange(e) {
@@ -51,54 +68,56 @@ export default function IdeaCards() {
   function handleDetailsChange(e) {
     setDetails(e.target.value);
   }
-  function startEditingByIndex(index) {
+
+  function createNewIdea() {
+    const newIdea = {
+      id: ideasArray.length,
+      title: "New Idea",
+      details: "Details",
+      createdAt: getFormattedDate(new Date()),
+      lastUpdated: "",
+    };
+    setIdeasArray([...ideasArray, newIdea]);
+    toggleIdeaEditing(null);
+  }
+
+  function toggleIdeaEditing(index) {
     setEditingIndex(index);
     if (index === null) {
       setTitle("");
       setDetails("");
       return;
     }
-    setTitle(ideas[index].title);
-    setDetails(ideas[index].details);
-  }
-
-  function deleteByIndex(index) {
-    setIdeas([
-      ...ideas.slice(0, index),
-      ...ideas.slice(index + 1, ideas.length),
-    ]);
-    startEditingByIndex(null);
+    setTitle(ideasArray[index].title);
+    setDetails(ideasArray[index].details);
   }
 
   function updateValuesByIndex(index, newInformation) {
-    if (!dataAppropriateLength) {
+    if (!allLengthsValid) {
       alert("Please make sure your data is within the character limits.");
       return;
     }
-    startEditingByIndex(null);
-    const ideasCopy = [...ideas];
-    ideasCopy[index].title = newInformation.title || ideasCopy[index].title;
-    ideasCopy[index].details =
-      newInformation.details || ideasCopy[index].details;
-    ideasCopy[index].lastUpdated = getFormattedDate(new Date());
-    setIdeas(ideasCopy);
+    toggleIdeaEditing(null);
+    const ideasArrayCopy = [...ideasArray];
+    ideasArrayCopy[index].title =
+      newInformation.title || ideasArrayCopy[index].title;
+    ideasArrayCopy[index].details =
+      newInformation.details || ideasArrayCopy[index].details;
+    ideasArrayCopy[index].lastUpdated = getFormattedDate(new Date());
+    setIdeasArray(ideasArrayCopy);
   }
 
-  function createNewIdea() {
-    const newIdea = {
-      id: ideas.length,
-      title: "New Idea",
-      details: "Details",
-      createdAt: getFormattedDate(new Date()),
-      lastUpdated: "",
-    };
-    setIdeas([...ideas, newIdea]);
-    startEditingByIndex(null);
+  function deleteByIndex(index) {
+    setIdeasArray([
+      ...ideasArray.slice(0, index),
+      ...ideasArray.slice(index + 1, ideasArray.length),
+    ]);
+    toggleIdeaEditing(null);
   }
 
   return (
     <>
-      {ideas.map((idea, index) => (
+      {ideasArray.map((idea, index) => (
         <div className="card" key={idea.id}>
           {editingIndex === index ? (
             <>
@@ -112,7 +131,9 @@ export default function IdeaCards() {
                   value={title || idea.title}
                   onChange={handleTitleChange}
                 />
-                <p className={titleLengthValidity}>{title.length} / 50</p>
+                <p className={titleLengthClass}>
+                  {title.length} / {CHAR_LIMIT_VALUES.TITLE.MAX}
+                </p>
               </div>
               <div>
                 <textarea
@@ -120,12 +141,14 @@ export default function IdeaCards() {
                   value={details || idea.details}
                   onChange={handleDetailsChange}
                 />
-                <p className={detailsLengthValidity}>{details.length} / 1000</p>
+                <p className={detailsLengthClass}>
+                  {details.length} / {CHAR_LIMIT_VALUES.DETAILS.MAX}
+                </p>
               </div>
               <div className="cards-btns-container">
                 <button
                   className={`btn ${
-                    dataAppropriateLength ? "editing-confirmation-btn" : ""
+                    allLengthsValid ? "editing-confirmation-btn" : ""
                   }`}
                   onClick={() =>
                     updateValuesByIndex(index, {
@@ -155,7 +178,7 @@ export default function IdeaCards() {
               <div className="cards-btns-container">
                 <button
                   className="btn editing-btn"
-                  onClick={() => startEditingByIndex(index)}
+                  onClick={() => toggleIdeaEditing(index)}
                 >
                   <EditIcon />
                 </button>

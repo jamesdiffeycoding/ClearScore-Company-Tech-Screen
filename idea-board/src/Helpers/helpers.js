@@ -1,6 +1,6 @@
-export { dummyData, getFormattedDate };
+export { DUMMY_DATA, getFormattedDate };
 
-const dummyData = [
+const DUMMY_DATA = [
   {
     id: 0,
     title: "Make your dishes truly spicy!",
