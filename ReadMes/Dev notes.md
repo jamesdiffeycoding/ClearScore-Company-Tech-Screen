@@ -44,6 +44,40 @@ Planned MVP 1 with basic functionality.
     Create and add functions to delete the data.
     Adapt to work with local storage.
 
+# Working towards a site with local variables
+
+- I aimed to first get the site working with local variables.
+- I created a DUMMYDATA set, now located in helpers.
+- I created a responsive layout for mapping the DUMMYDATA on screen.
+- I created a component for the IdeaCards that manages all complexity.
+- I added text fields and buttons to the cards.
+
+## CRUD functionality
+
+- I implemented functionality for editing existing cards.
+
+This included character counts with conditional formatting to alert the user when they are close to or have surpassed the character limit.
+
+- I implemented functionality for creating new cards.
+
+- I implemented functionality for deleting cards.
+
+- I refactored the code for clarity/maintainability where possible, including:
+
+... implementing a single object state for editing card title and details, supporting scalability by simplifying the process of adding more fields later if needed.
+
+... adding reusable components (e.g for text areas and buttons) to improve readability where they are conditionally rendered.
+
+... using consistent naming and declaration conventions, such as:
+
+- declaring reusable components with arrow functions (const = () => ...)
+- declaring functions with standard syntax (function name() {...})
+- declaring const variables (e.g. for conditional length class names) to avoid 'magic values' causing accidental typo-errors
+
+# Things I don't love about my code design
+
+- all the CRUD functions and buttons create clutter by needing to be declared within the IdeaCards component as they use the states declared within it. I could make the buttons a nested component to part-solve this.
+
 # Questions:
 
 - How to handle old dependencies?
