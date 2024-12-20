@@ -4,7 +4,7 @@ import { DUMMY_DATA, getFormattedDate } from "../Helpers/helpers.js";
 
 export default function IdeaCards() {
   // STATES -----------------------------------------------
-  const [ideasArray, setIdeasArray] = useState(DUMMY_DATA);
+  const [ideasArray, setIdeasArray] = useState([]);
   const [indexBeingEdited, setIndexBeingEdited] = useState(null);
   const [editedInfo, setEditedInfo] = useState({
     title: "",
@@ -17,7 +17,7 @@ export default function IdeaCards() {
   const [allLengthsValid, setAllLengthsValid] = useState(false);
 
   // CHARACTER LIMITS -------------------------------------
-  //  consts ----------------------------
+  //  char limit consts ----------------------------
   const CHAR_LIMITS = {
     TITLE: { MAX: 50, WARNING: 43 },
     DETAILS: { MAX: 1000, WARNING: 950 },
@@ -28,7 +28,7 @@ export default function IdeaCards() {
     OK: "character-limit-ok",
   };
 
-  // useEffects -------------------------
+  // char limit useEffects -------------------------
   // update titleLengthClass
   useEffect(() => {
     if (editedInfo.title.length > CHAR_LIMITS.TITLE.MAX) {
@@ -76,6 +76,20 @@ export default function IdeaCards() {
         editedInfoLengthClasses.details !== CHAR_LIMIT_CLASSES.SURPASSED
     );
   }, [editedInfo]);
+
+  // LOCAL STORAGE ----------------------------------------
+  useEffect(() => {
+    const locallyStoredIdeas = localStorage.getItem("ideasArray");
+    if (locallyStoredIdeas) {
+      setIdeasArray(JSON.parse(locallyStoredIdeas));
+    } else {
+      setIdeasArray(DUMMY_DATA);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ideasArray", JSON.stringify(ideasArray));
+  }, [ideasArray]);
 
   // CRUD SUPPORT FUNCTIONS ----------------------------------------
   function handleChange(e, section) {
