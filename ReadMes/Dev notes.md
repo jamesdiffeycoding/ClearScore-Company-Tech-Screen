@@ -35,3 +35,18 @@ I added a folder for readmes
         ClearScore (original).md (all ClearScore instructions)
         Dev notes.md (an activity and thought-diary)
         ClearScore (short).md (my summary of the ClearScore instructions)
+
+Planned MVP 1 with basic functionality.
+
+    Draft structure of object I need.
+    Create file with basic idea data.
+    Map idea data into components.
+    Create and add functions to delete the data.
+    Adapt to work with local storage.
+
+# Questions:
+
+- How to handle old dependencies?
+- Ok that I updated it to modern React code?
+- What is the .editorconfig file and npm ignore file for?
+- what is procedural programming?

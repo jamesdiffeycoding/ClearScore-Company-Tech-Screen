@@ -25,8 +25,6 @@ They want
 - A detailed README explaining assumptions / decisions
 - A live site we can see
 
-I chose the idea-board app.
-
 ## James's notes from reading the IDEA-BOARD README.md file.
 
 Want to see well structured and thought-out code. Unique solutions e.g. with animations or procedural programming are welcome.
@@ -50,6 +48,7 @@ Stretch
 - local storageAPI for persistance of current stati
 - character countdown from characters 120-140 in description and 20-30 characters in the title
 - unobtrusive notification when an update is made.
+- animations: drag and drop to delete
 
 ## Assumptions I made
 
