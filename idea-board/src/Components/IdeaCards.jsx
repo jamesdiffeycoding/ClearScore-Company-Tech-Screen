@@ -138,22 +138,22 @@ export default function IdeaCards() {
     <>
       {ideasArray.map((storedIdea, index) => (
         <div className="card" key={storedIdea.id}>
+          <section className="card-dates">
+            <div>Created: {storedIdea.createdAt}</div>
+            <div>Updated: {storedIdea.lastUpdated}</div>
+          </section>
+
           {currentIndex === index ? (
             <>
-              <section className="card-dates">
-                <div> Created: {storedIdea.createdAt}</div>
-                <div> Updated: {storedIdea.lastUpdated}</div>
-              </section>
-              <div>
-                <textarea
-                  className="textarea-title"
-                  value={editedInfo.title || storedIdea.title}
-                  onChange={(e) => handleChange(e, "title")}
-                />
-                <p className={editedInfoLengthClasses.title}>
-                  {editedInfo.title.length} / {CHAR_LIMITS.TITLE.MAX}
-                </p>
-              </div>
+              <textarea
+                className="textarea-title"
+                value={editedInfo.title || storedIdea.title}
+                onChange={(e) => handleChange(e, "title")}
+              />
+              <p className={editedInfoLengthClasses.title}>
+                {editedInfo.title ? editedInfo.title.length : 0} /{" "}
+                {CHAR_LIMITS.TITLE.MAX}
+              </p>
               <div>
                 <textarea
                   className="textarea-details"
@@ -161,10 +161,12 @@ export default function IdeaCards() {
                   onChange={(e) => handleChange(e, "details")}
                 />
                 <p className={editedInfoLengthClasses.details}>
-                  {editedInfo.title.length} / {CHAR_LIMITS.DETAILS.MAX}
+                  {editedInfo.details ? editedInfo.details.length : 0} /{" "}
+                  {CHAR_LIMITS.DETAILS.MAX}
                 </p>
               </div>
-              <div className="cards-btns-container">
+
+              <section className="cards-btns-container">
                 <button
                   className={`btn ${
                     allLengthsValid ? "editing-confirmation-btn" : ""
@@ -184,17 +186,14 @@ export default function IdeaCards() {
                 >
                   <DeleteIcon />
                 </button>
-              </div>
+              </section>
             </>
           ) : (
             <>
-              <section className="card-dates">
-                <div> Created: {storedIdea.createdAt}</div>
-                <div> Updated: {storedIdea.lastUpdated}</div>
-              </section>
               <div className="card-title">{storedIdea.title}</div>
               <div className="card-details">{storedIdea.details}</div>
-              <div className="cards-btns-container">
+
+              <section className="cards-btns-container">
                 <button
                   className="btn editing-btn"
                   onClick={() => editCard(index)}
@@ -207,11 +206,12 @@ export default function IdeaCards() {
                 >
                   <DeleteIcon />
                 </button>
-              </div>
+              </section>
             </>
           )}
         </div>
       ))}
+
       <div className="create-card-container">
         <div className="create-outline">
           <button className="create-btn" onClick={() => createNewIdea()}>

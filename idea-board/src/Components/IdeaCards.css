@@ -26,6 +26,7 @@
 
 .textarea-title {
   padding-bottom: 1rem;
+  border-radius: 0.5rem;
   color: #341bbe;
   width: 100%;
   font-size: 1.2rem;
@@ -38,6 +39,8 @@
 
 .textarea-details {
   font-size: 0.8rem;
+  border-radius: 0.5rem;
+
   width: 100%;
   text-align: left;
   padding-bottom: 1rem;

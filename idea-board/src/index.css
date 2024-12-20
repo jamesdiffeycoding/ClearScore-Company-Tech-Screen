@@ -1,7 +1,27 @@
 /* Global styles */
 
+@font-face {
+  font-family: "ClearScore Font";
+  src: url("/public/fonts/cs-clarity-regular.woff2") format("woff2"),
+    url("/public/fonts/cs-clarity-regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ClearScore Thin";
+  src: url("/public/fonts/cs-clarity-thin.woff2") format("woff2"),
+    url("/public/fonts/cs-clarity-thin.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: "ClearScore Font", sans-serif;
+}
+
+header {
+  font-family: "ClearScore Thin", sans-serif;
 }
