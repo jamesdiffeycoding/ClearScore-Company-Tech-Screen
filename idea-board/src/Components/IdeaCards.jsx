@@ -1,12 +1,48 @@
-import { useState } from "react";
-import getFormattedDate from "../Helpers/getFormattedDate.js";
-import dummyData from "../Helpers/dummyData.js";
+import "./IdeaCards.css";
+import { useState, useEffect } from "react";
+import { dummyData, getFormattedDate } from "../Helpers/helpers.js";
+
 export default function IdeaCards() {
   // STATES -----------------------------------------------
   const [ideas, setIdeas] = useState(dummyData);
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
+  const [titleLengthValidity, setTitleLengthValidity] = useState("");
+  const [detailsLengthValidity, setDetailsLengthValidity] = useState("");
+  const [dataAppropriateLength, setDataAppropriateLength] = useState(false);
+
+  // USE EFFECTS FOR CHARACTER LIMITS -----------------------
+  useEffect(() => {
+    if (title.length > 50) {
+      setTitleLengthValidity("character-limit-surpassed");
+    } else if (title.length >= 40) {
+      setTitleLengthValidity("character-limit-close");
+    } else {
+      setTitleLengthValidity("character-limit-ok");
+    }
+  }, [title]);
+
+  useEffect(() => {
+    if (details.length > 1000) {
+      setDetailsLengthValidity("character-limit-surpassed");
+    } else if (details.length >= 900) {
+      setDetailsLengthValidity("character-limit-close");
+    } else {
+      setDetailsLengthValidity("character-limit-ok");
+    }
+  }, [details]);
+
+  useEffect(() => {
+    if (
+      titleLengthValidity !== "character-limit-surpassed" &&
+      detailsLengthValidity !== "character-limit-surpassed"
+    ) {
+      setDataAppropriateLength(true);
+    } else {
+      setDataAppropriateLength(false);
+    }
+  }, [titleLengthValidity, detailsLengthValidity]);
 
   // CRUD SUPPORT FUNCTIONS ----------------------------------------
   function handleTitleChange(e) {
@@ -20,10 +56,10 @@ export default function IdeaCards() {
     if (index === null) {
       setTitle("");
       setDetails("");
-    } else {
-      setTitle(ideas[index].title);
-      setDetails(ideas[index].details);
+      return;
     }
+    setTitle(ideas[index].title);
+    setDetails(ideas[index].details);
   }
 
   function deleteByIndex(index) {
@@ -35,6 +71,10 @@ export default function IdeaCards() {
   }
 
   function updateValuesByIndex(index, newInformation) {
+    if (!dataAppropriateLength) {
+      alert("Please make sure your data is within the character limits.");
+      return;
+    }
     startEditingByIndex(null);
     const ideasCopy = [...ideas];
     ideasCopy[index].title = newInformation.title || ideasCopy[index].title;
@@ -43,6 +83,7 @@ export default function IdeaCards() {
     ideasCopy[index].lastUpdated = getFormattedDate(new Date());
     setIdeas(ideasCopy);
   }
+
   function createNewIdea() {
     const newIdea = {
       id: ideas.length,
@@ -58,27 +99,34 @@ export default function IdeaCards() {
   return (
     <>
       {ideas.map((idea, index) => (
-        <div className="app-card" key={idea.id}>
+        <div className="card" key={idea.id}>
           {editingIndex === index ? (
             <>
-              <section className="app-card-date">
+              <section className="card-date">
                 <div> Created: {idea.createdAt}</div>
                 <div> Updated: {idea.lastUpdated}</div>
               </section>
-              <textarea
-                className="app-textarea-title"
-                value={title || idea.title}
-                onChange={handleTitleChange}
-              />
-              <textarea
-                className="app-textarea-details"
-                value={details || idea.details}
-                onChange={handleDetailsChange}
-              />
-
-              <div className="app-cards-btns-container">
+              <div>
+                <textarea
+                  className="textarea-title"
+                  value={title || idea.title}
+                  onChange={handleTitleChange}
+                />
+                <p className={titleLengthValidity}>{title.length} / 50</p>
+              </div>
+              <div>
+                <textarea
+                  className="textarea-details"
+                  value={details || idea.details}
+                  onChange={handleDetailsChange}
+                />
+                <p className={detailsLengthValidity}>{details.length} / 1000</p>
+              </div>
+              <div className="cards-btns-container">
                 <button
-                  className="app-btn app-editing-confirmation-btn"
+                  className={`btn ${
+                    dataAppropriateLength ? "editing-confirmation-btn" : ""
+                  }`}
                   onClick={() =>
                     updateValuesByIndex(index, {
                       title: title,
@@ -89,7 +137,7 @@ export default function IdeaCards() {
                   <ConfirmEditIcon />
                 </button>
                 <button
-                  className="app-btn app-deleting-btn"
+                  className="btn deleting-btn"
                   onClick={() => deleteByIndex(index)}
                 >
                   <DeleteIcon />
@@ -98,21 +146,21 @@ export default function IdeaCards() {
             </>
           ) : (
             <>
-              <section className="app-card-date">
+              <section className="card-date">
                 <div> Created: {idea.createdAt}</div>
                 <div> Updated: {idea.lastUpdated}</div>
               </section>
-              <div className="app-card-title">{idea.title}</div>
-              <div className="app-card-details">{idea.details}</div>
-              <div className="app-cards-btns-container">
+              <div className="card-title">{idea.title}</div>
+              <div className="card-details">{idea.details}</div>
+              <div className="cards-btns-container">
                 <button
-                  className="app-btn app-editing-btn"
+                  className="btn editing-btn"
                   onClick={() => startEditingByIndex(index)}
                 >
                   <EditIcon />
                 </button>
                 <button
-                  className="app-btn app-deleting-btn"
+                  className="btn deleting-btn"
                   onClick={() => deleteByIndex(index)}
                 >
                   <DeleteIcon />
@@ -122,9 +170,9 @@ export default function IdeaCards() {
           )}
         </div>
       ))}
-      <div className="app-create-card-container">
-        <div className="app-create-outline">
-          <button className="app-create-btn" onClick={() => createNewIdea()}>
+      <div className="create-card-container">
+        <div className="create-outline">
+          <button className="create-btn" onClick={() => createNewIdea()}>
             +
           </button>
         </div>
