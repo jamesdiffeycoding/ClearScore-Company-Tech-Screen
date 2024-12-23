@@ -232,7 +232,7 @@ const EditIcon = () => (
 );
 
 const ConfirmEditIcon = () => (
-  <img src="confirm_edit.svg" alt="tick icon" height="10" width="15" />
+  <img src="confirm_edit.svg" alt="tick icon" height="10w" width="15" />
 );
 
 const DeleteIcon = () => (

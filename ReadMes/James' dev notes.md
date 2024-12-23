@@ -84,3 +84,43 @@ This included character counts with conditional formatting to alert the user whe
 - Ok that I updated it to modern React code?
 - What is the .editorconfig file and npm ignore file for?
 - what is procedural programming?
+
+What they use
+
+ES6/ ES7,
+React with Redux
+Isomorphic / Universal SPA
+PostCSS + CSS modules for styling
+MEN - Mongo Express Nodes
+Webpack module bundler and Lerna package manager
+Jest and Enzyme for Unit testing
+
+Looking for
+
+stylish solution
+clean concise code
+unit tests
+css knowledge
+detailed readme with assumptions / decisions
+a live site we can see
+
+Idea board needs
+
+create
+update
+delete
+sort functionality
+
+description max length of 140 c.
+
+# include
+
+- test suite
+- comments where required
+- attention to detail.
+- full responsiveness
+- focus the new title field when new idea pessed
+- sort by creation date or alphabetically
+- use localStorage to maintain state
+- add character countdown
+- add unobtrusive notification when update is made to a tile.

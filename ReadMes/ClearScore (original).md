@@ -72,5 +72,3 @@ When working through the task you should treat it as if you're writing real worl
 ## Don't forget
 
 [what we're looking for](https://github.com/ClearScore/tech-screen#what-were-looking-for)
-
----
